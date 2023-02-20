@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +40,7 @@ public class PizzaController {
 		if (keyword!=null && !keyword.isEmpty()) {
 			listPizze = pizzaRepository.findByNameLike(keyword + "%");
 		} else {
-			listPizze = pizzaRepository.findAll();
+			listPizze = pizzaRepository.findAll(Sort.by("name"));
 		}
 		model.addAttribute("pizze", listPizze);
 		return "pizze/index";
@@ -77,6 +78,37 @@ public class PizzaController {
 		}
 
 		pizzaRepository.save(formPizza);
+
+		return "redirect:/pizze";
+	}
+	
+	
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable("id") Integer id, Model model) {
+		Pizza pizza = pizzaRepository.getReferenceById(id);
+		model.addAttribute("pizza", pizza);
+		return "pizze/edit";
+	}
+
+	@PostMapping("/update/{id}")
+	public String update(
+			@Valid @ModelAttribute Pizza formPizza,
+			BindingResult bindingResult,
+			Model model) {
+
+		if (bindingResult.hasErrors()) {
+			return "pizze/edit";
+		}
+
+		pizzaRepository.save(formPizza);
+
+		return "redirect:/pizze/" + formPizza.getId();
+	}
+
+	@PostMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Integer id) {
+
+		pizzaRepository.deleteById(id);
 
 		return "redirect:/pizze";
 	}

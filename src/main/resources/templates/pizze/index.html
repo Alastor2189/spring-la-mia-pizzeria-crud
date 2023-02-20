@@ -23,9 +23,8 @@
 			</div>
 		</form>
 
-		<!-- SE non ci sono pizze nel db -->
 		<h2 class="text-center my-5" th:unless="${pizze.size() > 0}">Non ci sono pizze disponibili</h2>
-		<!-- ALTRIMENTI: Lista pizze -->
+		
 		<table th:if="${pizze.size() > 0}" class="table table-hover align-middle">
 			<thead>
 			    <tr>
@@ -43,6 +42,22 @@
 			      <td>[[${pizza.descrizione}]]</td>
 			      <td>€ [[${pizza.prezzo}]]</td>
 			      <td><img th:src="@{${pizza.immagine}}" width="100"></td>
+			      <td>
+			      	<!-- Visualizza -->
+					<a th:href="@{/pizze/{id} (id=${pizza.id})}" class="btn btn-primary">
+		      			<i class="fa-solid fa-sheet-plastic"></i>
+		      		</a>
+			      	<!-- Modifica -->
+					<a th:href="@{/pizze/edit/{id} (id=${pizza.id})}" class="btn btn-success">
+		      			<i class="fa-regular fa-pen-to-square"></i>
+		      		</a>
+		      		<!-- Elimina -->
+			      	<form action="#" th:action="@{/pizze/delete/{id}(id=${pizza.id})}" method="post" class="d-inline-block">
+			      		<button type="submit" id="submitButton" class="btn btn-danger">
+			      			<i class="fa fa-trash-alt"></i>
+			      		</button>
+			      	</form>
+			      </td>
 			    </tr>
 		  	</tbody>
 		</table>
